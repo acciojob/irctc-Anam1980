@@ -90,12 +90,7 @@ public class TrainService {
         if (trainOptional.isPresent() == false) {
             throw new Exception("Train is not passing from this station");
         }
-        try{
-            Station checkStation = Station.valueOf(String.valueOf(station));
-        }
-        catch (Exception e){
-            throw new Exception(e.getMessage());
-        }
+
 
         Train train = trainOptional.get();
         List<Ticket> ticketList = train.getBookedTickets();
