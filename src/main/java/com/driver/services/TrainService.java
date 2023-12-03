@@ -166,7 +166,7 @@ public class TrainService {
     }
 
     private Set<Station> getRouteStations(String route) {
-        Set<Station> stationSet = EnumSet.noneOf(Station.class);
+        Set<Station> stationSet = new HashSet<>();
 
         // Split the route string into station names
         String[] stationNames = route.split(",");
