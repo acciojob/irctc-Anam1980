@@ -52,7 +52,7 @@ public class TicketService {
 
             List<Object> routeStationsList = Arrays.asList(routeStations.split(","));
 
-            String fromStation = String.valueOf(bookTicketEntryDto.getFromStation());
+        String fromStation = String.valueOf(bookTicketEntryDto.getFromStation());
             String toStation = String.valueOf(bookTicketEntryDto.getToStation());
 
             if(!routeStationsList.contains(fromStation) || !routeStationsList.contains(toStation)){

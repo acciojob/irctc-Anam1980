@@ -30,7 +30,7 @@ public class TrainService {
         String route = "";
         int listsize = stations.size();
         for (int i = 0; i < listsize; i++) {
-            if (i != listsize - 1) {
+            if (i < listsize - 1) {
                 route += stations.get(i) + ",";
             } else {
                 route += stations.get(i);
@@ -67,7 +67,7 @@ public class TrainService {
         int bookedSeats = 0;
 
         for (Ticket ticket : train.getBookedTickets()) {
-            if ((ticket.getFromStation().ordinal() >= fromStation.ordinal() && ticket.getFromStation().ordinal() <= toStation.ordinal()) || (ticket.getToStation().ordinal() >= fromStation.ordinal() && ticket.getToStation().ordinal() <= toStation.ordinal())) {
+            if ((ticket.getFromStation().ordinal() >= fromStation.ordinal() && ticket.getFromStation().ordinal() <= toStation.ordinal()) && (ticket.getToStation().ordinal() >= fromStation.ordinal() && ticket.getToStation().ordinal() <= toStation.ordinal())) {
                 int numOfPeople = ticket.getPassengersList().size();
                 bookedSeats += numOfPeople;
             }
