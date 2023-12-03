@@ -91,7 +91,7 @@ public class TrainService {
             Station checkStation = Station.valueOf(String.valueOf(station));
         }
         catch (Exception e){
-            throw new Exception();
+            throw new Exception("Train is not passing from this station");
         }
 
         Train train = trainOptional.get();
