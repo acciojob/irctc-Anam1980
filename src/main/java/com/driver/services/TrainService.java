@@ -141,10 +141,10 @@ public class TrainService {
         for (Train train : trains) {
             String route = train.getRoute();
 
-            Set<Station> stationList = getRouteStations(route);
+            List<Station> stationList = getRouteStations(route);
 
             LocalTime trainDepartureTime = train.getDepartureTime();
-            LocalTime arrivalTimeAtStation = trainDepartureTime.plusHours(hoursBetweenStations((List<Station>) stationList, station));
+            LocalTime arrivalTimeAtStation = trainDepartureTime.plusHours(hoursBetweenStations(stationList, station));
 
             if (stationList.contains(station) &&
                     !arrivalTimeAtStation.isBefore(startTime) &&
@@ -165,8 +165,8 @@ public class TrainService {
         return targetIndex * 1; // Assuming 1 hour between each station
     }
 
-    private Set<Station> getRouteStations(String route) {
-        Set<Station> stationSet = new HashSet<>();
+    private List<Station> getRouteStations(String route) {
+        List<Station> stationSet = new ArrayList<>();
 
         // Split the route string into station names
         String[] stationNames = route.split(",");
