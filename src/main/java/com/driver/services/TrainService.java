@@ -68,7 +68,8 @@ public class TrainService {
 
         for (Ticket ticket : train.getBookedTickets()) {
             if ((ticket.getFromStation().ordinal() >= fromStation.ordinal() && ticket.getFromStation().ordinal() <= toStation.ordinal()) || (ticket.getToStation().ordinal() >= fromStation.ordinal() && ticket.getToStation().ordinal() <= toStation.ordinal())) {
-                bookedSeats += 1;
+                int numOfPeople = ticket.getPassengersList().size();
+                bookedSeats += numOfPeople;
             }
         }
         return totalSeats - bookedSeats;

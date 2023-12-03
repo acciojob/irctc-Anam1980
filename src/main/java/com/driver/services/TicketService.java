@@ -47,7 +47,6 @@ public class TicketService {
        //And the end return the ticketId that has come from db
         Optional<Train>trainOptional=trainRepository.findById(bookTicketEntryDto.getTrainId());
 
-        if(trainOptional.isPresent()){
             Train train = trainOptional.get();
             String routeStations = train.getRoute();
 
@@ -86,9 +85,7 @@ public class TicketService {
             else{
                 throw new Exception("Less tickets are available");
             }
-        }
 
-       return null;
 
     }
 
