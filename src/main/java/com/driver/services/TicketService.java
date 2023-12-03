@@ -64,9 +64,10 @@ public class TicketService {
 
             if(availableSeats>=requestedSeats){
                 Ticket ticket = createTicket(train, bookTicketEntryDto);
-                ticketRepository.save(ticket);
+                Ticket ticket1=ticketRepository.save(ticket);
+
                 List<Ticket>tickets = train.getBookedTickets();
-                tickets.add(ticket);
+                tickets.add(ticket1);
                 train.setBookedTickets(tickets);
                 trainRepository.save(train);
 
@@ -75,12 +76,13 @@ public class TicketService {
                 if(passenger.isPresent()){
                     Passenger passenger1 = passenger.get();
                     List<Ticket>ticketList=passenger1.getBookedTickets();
-                    ticketList.add(ticket);
+                    ticketList.add(ticket1);
+                    passenger1.setBookedTickets(ticketList);
                     passengerRepository.save(passenger1);
                 }
 
 
-                return ticket.getTicketId();
+                return ticket1.getTicketId();
             }
             else{
                 throw new Exception("Less tickets are available");
