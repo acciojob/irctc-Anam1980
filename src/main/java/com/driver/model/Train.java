@@ -66,6 +66,7 @@ public class Train {
         this.bookedTickets = bookedTickets;
     }
 
+
     public LocalTime getDepartureTime() {
         return departureTime;
     }

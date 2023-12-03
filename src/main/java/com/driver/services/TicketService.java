@@ -3,16 +3,20 @@ package com.driver.services;
 
 import com.driver.EntryDto.BookTicketEntryDto;
 import com.driver.model.Passenger;
+import com.driver.model.Station;
 import com.driver.model.Ticket;
 import com.driver.model.Train;
 import com.driver.repository.PassengerRepository;
 import com.driver.repository.TicketRepository;
 import com.driver.repository.TrainRepository;
+import org.assertj.core.util.Arrays;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class TicketService {
@@ -41,8 +45,96 @@ public class TicketService {
         //Save the bookedTickets in the train Object
         //Also in the passenger Entity change the attribute bookedTickets by using the attribute bookingPersonId.
        //And the end return the ticketId that has come from db
+        Optional<Train>trainOptional=trainRepository.findById(bookTicketEntryDto.getTrainId());
+
+        if(trainOptional.isPresent()){
+            Train train = trainOptional.get();
+            String routeStations = train.getRoute();
+
+            List<Object> routeStationsList = Arrays.asList(routeStations.split(","));
+
+            String fromStation = String.valueOf(bookTicketEntryDto.getFromStation());
+            String toStation = String.valueOf(bookTicketEntryDto.getToStation());
+
+            if(!routeStationsList.contains(fromStation) || !routeStationsList.contains(toStation)){
+                throw  new Exception("Invalid stations");
+            }
+
+            int availableSeats = train.getNoOfSeats()-train.getBookedTickets().size();
+            int requestedSeats = bookTicketEntryDto.getNoOfSeats();
+
+            if(availableSeats>=requestedSeats){
+                Ticket ticket = createTicket(train, bookTicketEntryDto);
+                ticketRepository.save(ticket);
+                List<Ticket>tickets = train.getBookedTickets();
+                tickets.add(ticket);
+                train.setBookedTickets(tickets);
+                trainRepository.save(train);
+
+                int id = bookTicketEntryDto.getBookingPersonId();
+                Optional<Passenger> passenger = passengerRepository.findById(id);
+                if(passenger.isPresent()){
+                    Passenger passenger1 = passenger.get();
+                    List<Ticket>ticketList=passenger1.getBookedTickets();
+                    ticketList.add(ticket);
+                    passengerRepository.save(passenger1);
+                }
+
+
+                return ticket.getTicketId();
+            }
+            else{
+                throw new Exception("Less tickets are available");
+            }
+        }
 
        return null;
 
+    }
+
+    private Ticket createTicket(Train train, BookTicketEntryDto bookTicketEntryDto) throws Exception {
+
+        Ticket ticket = new Ticket();
+        ticket.setTrain(train);
+        ticket.setFromStation(bookTicketEntryDto.getToStation());
+        ticket.setToStation(bookTicketEntryDto.getToStation());
+        int fare = calculateFare(bookTicketEntryDto.getFromStation(), bookTicketEntryDto
+                .getToStation(), train.getRoute());
+
+        ticket.setTotalFare(fare);
+
+        return ticket;
+    }
+
+    private int calculateFare(Station fromStation, Station toStation, String route) throws Exception {
+        int fare =0;
+        if(fromStation!=toStation){
+            String[]stations = route.split(",");
+            int startIndex = -1;
+
+            int endIndex = -1;
+
+            for(int i=0; i<stations.length; i++) {
+                if (stations[i].equals(fromStation.name())) {
+                    startIndex = i;
+                }
+                if (stations[i].equals(toStation.name())) {
+                    endIndex = i;
+                }
+            }
+
+                if(startIndex!=-1 && endIndex!=-1){
+                    int start = Math.min(startIndex, endIndex);
+                    int end = Math.max(startIndex, endIndex);
+
+                    for(int i=start;i<end;i++){
+                        fare+=300;
+                }
+            }
+                else{
+                    throw new Exception("Invalid stations");
+                }
+        }
+        return fare;
     }
 }
