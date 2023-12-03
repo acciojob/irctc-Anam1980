@@ -95,7 +95,7 @@ public class TicketService {
 
         Ticket ticket = new Ticket();
         ticket.setTrain(train);
-        ticket.setFromStation(bookTicketEntryDto.getToStation());
+        ticket.setFromStation(bookTicketEntryDto.getFromStation());
         ticket.setToStation(bookTicketEntryDto.getToStation());
         int fare = calculateFare(bookTicketEntryDto.getFromStation(), bookTicketEntryDto
                 .getToStation(), train.getRoute());
