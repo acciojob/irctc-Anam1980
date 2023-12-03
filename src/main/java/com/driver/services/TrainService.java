@@ -64,15 +64,17 @@ public class TrainService {
         Station toStation = seatAvailabilityEntryDto.getToStation();
 
         int totalSeats = train.getNoOfSeats();
-        int bookedSeats = 0;
+        Set<Passenger>passengerSet = new HashSet<>();
 
         for (Ticket ticket : train.getBookedTickets()) {
             if ((ticket.getFromStation().ordinal() >= fromStation.ordinal() && ticket.getFromStation().ordinal() <= toStation.ordinal()) && (ticket.getToStation().ordinal() >= fromStation.ordinal() && ticket.getToStation().ordinal() <= toStation.ordinal())) {
-                int numOfPeople = ticket.getPassengersList().size();
-                bookedSeats += numOfPeople;
+                for(Passenger passenger : ticket.getPassengersList()){
+                    passengerSet.add(passenger);
+                }
+
             }
         }
-        return totalSeats - bookedSeats;
+        return totalSeats - passengerSet.size();
     }
 
     public Integer calculatePeopleBoardingAtAStation(Integer trainId, Station station) throws Exception {
